@@ -1,0 +1,39 @@
+{% extends 'divccon/base.html' %}
+
+{% block header %}
+<nav class="row d-flex align-items-center my-3">
+    <div class="col-1 "></div>
+    <div class="col-7">
+        <h1 class="fw-bolder">Welcome to Divccon</h1>
+        <hr>
+    </div>
+    <div class="col-4"></div>
+</nav>
+{% endblock header %}
+
+{% block container %}
+    <h2 class="text-primary fs-4 mb-4">Fill the form below to begin your Registration.</h2>
+    <form class="form-group" action="{% url 'home' %}" method="post">
+        {% csrf_token %}
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="firstname"><span class="input-group-text" id="firstname-label">Firstname</span></label>
+                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your First name" required>
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="lastname"><span class="input-group-text" id="lastname-label">Lastname</span></label>
+                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your Last name" required>
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="pin"><span class="input-group-text" id="pin-label">PIN</span></label>
+                <input type="password" class="form-control" id="pin" name="pin" placeholder="Enter your PIN" required>
+            </div>   
+        </div>
+        <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+{% endblock container %}
+
