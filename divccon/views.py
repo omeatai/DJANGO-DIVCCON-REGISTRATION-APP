@@ -24,11 +24,12 @@ def home(request):
             request.session['lastname'] = lastname
             request.session['pin'] = pin
             
-            sender = "admin@divccon.com"
-            subject = f"Registration for {firstname} {lastname}"
-            message = f"<h2>From: {sender}</h2><br><h2>Congratulations {firstname} {lastname}, on your Registration!<br><h3>Your PIN is {pin}.</h2>"
-            recipients = ['omeatai@gmail.com']
-            send_mail(subject, message, sender, recipients)
+            #send Email
+            # sender = "admin@divccon.com"
+            # subject = f"Registration for {firstname} {lastname}"
+            # message = f"<h2>From: {sender}</h2><br><h2>Congratulations {firstname} {lastname}, on your Registration!<br><h3>Your PIN is {pin}.</h2>"
+            # recipients = ['omeatai@gmail.com']
+            # send_mail(subject, message, sender, recipients)
             
             return redirect('registration_two')
         return render(request, 'divccon/home.html', {

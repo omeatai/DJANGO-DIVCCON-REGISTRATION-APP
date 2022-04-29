@@ -15,31 +15,36 @@
     <h2 class="text-primary fs-4 mb-4">Fill the form below to begin your Registration.</h2>
     <form class="form-group" action="{% url 'home' %}" method="POST">
         {% csrf_token %}
-        {{form.as_p}}
-        {% comment %} 
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                <label for="firstname"><span class="input-group-text" id="firstname-label">Firstname</span></label>
-                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your First name" required>  
+                {{form.firstname.errors}}
+                <label for="id_firstname"><span class="input-group-text" id="firstname-label">Firstname</span></label>
+                {% comment %} 
+                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your First name" required>   
+                {% endcomment %}
                 {{form.firstname}}
             </div>   
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                <label for="lastname"><span class="input-group-text" id="lastname-label">Lastname</span></label>
-                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your Last name" required> 
+                {{form.lastname.errors}}
+                <label for="id_lastname"><span class="input-group-text" id="lastname-label">Lastname</span></label>
+                {% comment %}
+                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your Last name" required>  
+                {% endcomment %}
                 {{form.lastname}}
             </div>   
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                <label for="pin"><span class="input-group-text" id="pin-label">PIN</span></label>
-                <input type="password" class="form-control" id="pin" name="pin" placeholder="Enter your PIN" required> 
-                
+                {{form.lastname.pin}}
+                <label for="id_pin"><span class="input-group-text" id="pin-label">PIN</span></label>
+                {% comment %} 
+                <input type="password" class="form-control" id="pin" name="pin" placeholder="Enter your PIN" required>  
+                {% endcomment %}
                 {{form.pin}}
             </div>   
         </div>
-        {% endcomment %}
         <button type="submit" class="btn btn-primary">Continue</button>
     </form>
 {% endblock container %}
