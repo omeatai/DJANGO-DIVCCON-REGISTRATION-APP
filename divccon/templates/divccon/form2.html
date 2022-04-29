@@ -14,7 +14,7 @@
 {% block container %}
     <form class="form-group" action="{% url 'registration_two' %}" method="post">
         {% csrf_token %}
-        <h2>Weldone, {{records.0}} {{records.1}}</h2>
+        <h2>Weldone, {{records.firstname}} {{records.lastname}}</h2>
         <h3 class="fs-5 text-success">Continue to fill the form below:</h3>
         {{records}}
 
