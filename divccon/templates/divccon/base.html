@@ -10,13 +10,23 @@
 </head>
 <body>
     <header>
-        {% block header %}
-        
-        {% endblock header %}
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8 d-flex flex-column justify-content-center align-items-center">
+                {% block header %}{% endblock header %}
+            </div>
+            <div class="col-2"></div>
+        </div>
     </header>
     <main>
         <div class="container">
-            {% block container %}{% endblock container %}
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8 d-flex flex-column justify-content-center ">
+                    {% block container %}{% endblock container %}
+                </div>
+                <div class="col-2"></div>
+            </div>
         </div>
 
     </main>

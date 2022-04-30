@@ -2,10 +2,10 @@
 
 {% block header %}
 <nav class="row d-flex flex-column justify-content-center align-items-center my-3">
-        <h1 class="fw-bolder">Registration Form-III</h1>
+        <h1 class="fw-bolder">Registration Form-IV</h1>
         <hr>
-        <h2>Great, {{sessions.title}} {{sessions.first_name}} {{sessions.last_name}}</h2>
-        <h3 class="text-success fs-4 mb-4">Now, Choose your Province:</h3>
+        <h2>Good, {{sessions.title}} {{sessions.first_name}} {{sessions.last_name}}</h2>
+        <h3 class="text-success fs-4 mb-4">Now, Choose your Diocese:</h3>
 </nav>
 {% endblock header %}
 
@@ -27,13 +27,13 @@
                 {% endfor %}
             {% endif %}
 
-            <form class="form-group" action="{% url 'registration_three' %}" method="post">
+            <form class="form-group" action="{% url 'registration_four' %}" method="post">
                 {% csrf_token %}
                 {{sessions}}
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
-                        <label for="id_province"><span class="input-group-text" id="is_province-lable">Province</span></label>
-                        {{form.province}}
+                        <label for="id_diocese"><span class="input-group-text" id="is_diocese-lable">Diocese</span></label>
+                        {{form.diocese}}
                     </div>   
                 </div>
                 

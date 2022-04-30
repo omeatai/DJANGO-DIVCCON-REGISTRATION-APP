@@ -1,51 +1,54 @@
 {% extends 'divccon/base.html' %}
 
 {% block header %}
-<nav class="row d-flex align-items-center my-3">
-    <div class="col-1 "></div>
-    <div class="col-7">
-        <h1 class="fw-bolder">Welcome to Divccon</h1>
-        <hr>
-    </div>
-    <div class="col-4"></div>
+<nav class="row d-flex flex-column justify-content-center align-items-center my-3">
+    <h1 class="fw-bolder">Welcome to Divccon</h1>
+    <hr>
+    <h2 class="text-primary fs-4 mb-4">Fill the form below to begin your Registration.</h2>
 </nav>
 {% endblock header %}
 
 {% block container %}
-    <h2 class="text-primary fs-4 mb-4">Fill the form below to begin your Registration.</h2>
+    
+    <!-- Error Alert -->
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <strong>Error!</strong> {{ error|escape }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <form class="form-group" action="{% url 'home' %}" method="POST">
         {% csrf_token %}
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                {{form.firstname.errors}}
-                <label for="id_firstname"><span class="input-group-text" id="firstname-label">Firstname</span></label>
-                {% comment %} 
-                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter your First name" required>   
-                {% endcomment %}
-                {{form.firstname}}
+                <label for="id_first_name"><span class="input-group-text" id="first_name-label">FIRSTNAME</span></label>
+                {{form.first_name}}
             </div>   
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                {{form.lastname.errors}}
-                <label for="id_lastname"><span class="input-group-text" id="lastname-label">Lastname</span></label>
-                {% comment %}
-                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter your Last name" required>  
-                {% endcomment %}
-                {{form.lastname}}
+                <label for="id_last_name"><span class="input-group-text" id="last_name-label">LASTNAME</span></label>
+                {{form.last_name}}
             </div>   
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-12 input-group mb-3">
-                {{form.lastname.pin}}
-                <label for="id_pin"><span class="input-group-text" id="pin-label">PIN</span></label>
-                {% comment %} 
-                <input type="password" class="form-control" id="pin" name="pin" placeholder="Enter your PIN" required>  
-                {% endcomment %}
-                {{form.pin}}
+                <label for="id_password"><span class="input-group-text" id="password-label">PIN</span></label>
+                {{form.password}}
             </div>   
         </div>
         <button type="submit" class="btn btn-primary">Continue</button>
     </form>
+    
 {% endblock container %}
 

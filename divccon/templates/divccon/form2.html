@@ -1,63 +1,75 @@
 {% extends 'divccon/base.html' %}
 
 {% block header %}
-<nav class="row d-flex align-items-center my-3">
-    <div class="col-1 "></div>
-    <div class="col-7">
+<nav class="row d-flex flex-column justify-content-center align-items-center my-3">
         <h1 class="fw-bolder">Registration Form-II</h1>
         <hr>
-    </div>
-    <div class="col-4"></div>
+        <h2>Weldone, {{sessions.first_name}} {{sessions.last_name}}</h2>
+        <h3 class="text-success fs-4 mb-4">Continue to fill the form below:</h3>
 </nav>
 {% endblock header %}
 
 {% block container %}
-    <form class="form-group" action="{% url 'registration_two' %}" method="post">
-        {% csrf_token %}
-        <h2>Weldone, {{records.firstname}} {{records.lastname}}</h2>
-        <h3 class="fs-5 text-success">Continue to fill the form below:</h3>
-        {{records}}
+            <!-- Error Alert -->
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Error!</strong> {{ error|escape }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-        <div class="row d-flex align-items-center">
-            <div class="col-12 input-group mb-3">
-                <label for="title"><span class="input-group-text" id="title-label">Title</span></label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Enter your Title.... For example: Mr|Mrs|Revd|Rt Revd|Most Revd|Barr|Dr|Pharm|Arch" required>
-            </div>   
-        </div>
-        <div class="row d-flex align-items-center">
-            <div class="col-12 input-group mb-3">
-                <label for="phone"><span class="input-group-text" id="phone-label">Phone no.</span></label>
-                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your Phone Number.... For example: +2348031111111" required>
-            </div>   
-        </div>
-        <div class="row d-flex align-items-center">
-            <div class="col-12 input-group mb-3">
-                <label for="email"><span class="input-group-text" id="email-label">Email</span></label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your Email.... For example: myemail@gmail.com" required>
-            </div>   
-        </div>
-        <div class="row d-flex align-items-center">
-            <div class="col-12 input-group mb-3">
-                <label for="sex"><span class="input-group-text" id="sex-label">Sex</span></label>
-                <select class="form-select form-select-sm" name="sex" id="sex" required>
-                    <option selected>Select your Sex</option>
-                    <option value="MALE">MALE</option>
-                    <option value="FEMALE">FEMALE</option>
-                </select>
-            </div>
-        </div>
-        <div class="row d-flex align-items-center">
-            <div class="col-12 input-group mb-3">
-                <label for="is_anglican"><span class="input-group-text" id="is_anglican-label">Anglican?</span></label>
-                <select class="form-select form-select-sm" name="is_anglican" id="is_anglican" required>
-                    <option selected>Are you an Anglican?</option>
-                    <option value="ANGLICAN">YES</option>
-                    <option value="NON-ANGLICAN">NO</option>
-                </select>
-            </div>   
-        </div>
-        
-        <button type="submit" class="btn btn-success">Continue</button>
-    </form>
+            <form class="form-group" action="{% url 'registration_two' %}" method="post">
+                {% csrf_token %}
+                {{sessions}}
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_title"><span class="input-group-text" id="title-label">Title</span></label>
+                        {{form.title}}
+                    </div>   
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_phone"><span class="input-group-text" id="phone-label">Phone no.</span></label>
+                        {{form.phone}}
+                    </div>   
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_email"><span class="input-group-text" id="email-label">Email</span></label>
+                        {{form.email}}
+                    </div>   
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_sex"><span class="input-group-text" id="sex-label">Sex</span></label>
+                        {{form.sex}}
+                    </div>
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_is_anglican"><span class="input-group-text" id="is_anglican-label">Anglican?</span></label>
+                        {{form.anglican}}
+                    </div>   
+                </div>
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 input-group mb-3">
+                        <label for="id_location"><span class="input-group-text" id="is_location-label">Location</span></label>
+                        {{form.location}}
+                    </div>   
+                </div>
+                
+                <button type="submit" class="btn btn-success">Continue</button>
+                <a href="{% url 'home' %}" type="submit" class="btn btn-danger">Go Back</a>
+            </form>
+
 {% endblock container %}
 
