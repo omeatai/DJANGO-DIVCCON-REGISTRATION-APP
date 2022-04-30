@@ -17,8 +17,8 @@ LOCATION_CHOICES = (
     ("ABROAD", "ABROAD"),
 )
 
-PROVINCE_CHOICES = (
-    ("", "---Select your Province---"),
-    ("NIGERIA", "NIGERIA"),
-    ("ABROAD", "ABROAD"),
-)
+# PROVINCE_CHOICES = (
+#     ("", "---Select your Province---"),
+#     ("NIGERIA", "NIGERIA"),
+#     ("ABROAD", "ABROAD"),
+# )
