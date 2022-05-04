@@ -1,8 +1,9 @@
 from django import forms
-from .models import User, Province
+from .models import User
 from .choices import * 
 
-class HomeForm(forms.Form):
+
+class HomeForm(forms.ModelForm):
     first_name = forms.CharField(
         label="Your First Name", 
         max_length=50, 
@@ -48,6 +49,11 @@ class HomeForm(forms.Form):
             "min_length": "Please enter a 6-digits PIN",
             })
     
+    class Meta:
+        model = User
+        fields = ['first_name','last_name', 'password']
+
+
 
 class RegistrationTwoForm(forms.ModelForm):
     title = forms.CharField(
@@ -132,22 +138,102 @@ class RegistrationTwoForm(forms.ModelForm):
         model = User
         fields = ['title','phone','email','sex','anglican','location']
 
+#PROVINCE
 
 class RegistrationThreeForm(forms.ModelForm):
-    
-    def __init__(self, *args, **kwargs):
-        super(RegistrationThreeForm, self).__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].label="Select your Province"
-            self.fields[field].required=True
-            self.fields[field].widget.attrs.update({
-                'class': 'form-select form-select-sm'
-            }) 
-            self.fields[field].error_messages = {
-            "required": "Your province field must not be empty",
-            } 
+    province = forms.ChoiceField(
+            label="Select your Province",
+            choices= PROVINCE_CHOICES,
+            required=True, 
+            widget=forms.Select(attrs={
+                'class': 'form-select form-select-sm',
+                }),
+            error_messages = {
+                "required": "Your province field must not be empty",
+                })  
 
     class Meta:
         model = User
         fields = ['province']  
 
+
+#DIOCESE
+
+class DioceseForm(forms.ModelForm):
+    diocese = forms.ChoiceField(
+            label="Select your Diocese",
+            required=True, 
+            # choices= ABUJA_DIOCESE_CHOICES,
+            widget=forms.Select(attrs={
+                'class': 'form-select form-select-sm',
+                }),
+            error_messages = {
+                "required": "Your Diocese field must not be empty",
+                })  
+
+    class Meta:
+        model = User
+        fields = ['diocese']  
+
+
+#CHURCH
+        
+class ChurchForm(forms.ModelForm):
+    church = forms.ChoiceField(
+            label="Select your Church",
+            choices= CHURCH_CHOICES,
+            required=True, 
+            widget=forms.Select(attrs={
+                'class': 'form-select form-select-sm',
+                }),
+            error_messages = {
+                "required": "Your Church field must not be empty",
+                })  
+
+    class Meta:
+        model = User
+        fields = ['church']  
+        
+        
+#DESIGNATION
+        
+class DesignationForm(forms.ModelForm):
+    designation = forms.ChoiceField(
+            label="Select your Designation",
+            choices= DESIGNATION_CHOICES,
+            required=True, 
+            widget=forms.Select(attrs={
+                'class': 'form-select form-select-sm',
+                }),
+            error_messages = {
+                "required": "Your Designation field must not be empty",
+                })  
+
+    class Meta:
+        model = User
+        fields = ['designation']        
+        
+
+#PHOTO
+
+class PhotoForm(forms.ModelForm):
+    photo = forms.ImageField(
+            label="Your Photo Image", 
+            required=True, 
+            widget=forms.FileInput(attrs={
+                'placeholder': 'Upload your Image',
+                'type': 'file',
+                'title': 'Click here to Upload',
+                'style': "color: red",
+                'class': 'form-control form-control-lg',
+                }),
+            error_messages = {
+                "required": "Your image field must not be empty",
+                })  
+
+    class Meta:
+        model = User
+        fields = ['photo']      
+        
+        
+        

@@ -1,0 +1,45 @@
+{% extends 'divccon/base.html' %}
+
+{% block header %}
+<nav class="row d-flex flex-column justify-content-center align-items-center my-3">
+        <h1 class="fw-bolder">Reset Provinces</h1>
+        <hr>
+        <!-- Message Alert -->
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{message}}
+            </div>
+        {% endfor %}   
+
+        <!-- Error Alert -->
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Error!</strong> {{ error|escape }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <h2 class="text-danger">Warning</h2>
+        <h3 class="text-danger fs-4 mb-4">Are you sure you want to reset the Provinces to default values?</h3>
+
+        <form class="form-group" action="{% url 'reset_provinces' %}" method="post">
+            {% csrf_token %}
+            
+            <button type="submit" class="btn btn-success">YES</button>
+            <a href="{% url 'home' %}" type="button" class="btn btn-danger">Go Back</a>
+        </form>            
+</nav>
+{% endblock header %}
+
+{% block container %}
+{% endblock container %}
+

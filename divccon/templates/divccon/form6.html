@@ -2,13 +2,13 @@
 
 {% block header %}
 <nav class="row d-flex flex-column justify-content-center align-items-center my-3">
-        <h1 class="fw-bolder">Registration Form-4 / 7</h1>
+        <h1 class="fw-bolder">Registration Form-6 / 7</h1>
         <hr>
-        <h2>Good, {{sessions.title}} {{sessions.first_name}} {{sessions.last_name}}</h2>
+        <h2>Great!, {{sessions.title}} {{sessions.first_name}} {{sessions.last_name}}</h2>
         <div class="row">
             <div class="col-1"></div>
             <div class="col-11">
-                <h3 class="text-success fs-4 mb-4">Choose your Diocese:</h3>
+                <h3 class="text-success fs-4 mb-4">Next, Choose your Designation:</h3>
             </div>
         </div>
         
@@ -33,14 +33,14 @@
                 {% endfor %}
             {% endif %}
 
-            <form class="form-group" action="{% url 'registration_four' %}" method="post">
+            <form class="form-group" action="{% url 'registration_six' %}" method="post">
                 {% csrf_token %}
                 {{sessions}}
                 {{sessions_view}}
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
-                        <label for="id_diocese"><span class="input-group-text" id="diocese-label">Diocese</span></label>
-                        {{form.diocese}}
+                        <label for="id_designation"><span class="input-group-text" id="designation-label">Designation</span></label>
+                        {{form.designation}}
                     </div>   
                 </div>
                 <div class="row"><p></p><p></p></div>
@@ -48,7 +48,7 @@
                     <div class="col-4"></div>
                     <div class="col-8">
                         <button type="submit" class="btn btn-success">Continue</button>
-                        <a href="{% url 'registration_three' %}" type="submit" class="btn btn-danger">Go Back</a>
+                        <a href="{% url 'registration_five' %}" type="submit" class="btn btn-danger">Go Back</a>
                     </div>
                 </div>
             </form>

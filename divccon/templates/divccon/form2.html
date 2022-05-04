@@ -2,7 +2,7 @@
 
 {% block header %}
 <nav class="row d-flex flex-column justify-content-center align-items-center my-3">
-        <h1 class="fw-bolder">Registration Form-II</h1>
+        <h1 class="fw-bolder">Registration Form-2 / 7</h1>
         <hr>
         <h2>Weldone, {{sessions.first_name}} {{sessions.last_name}}</h2>
         <h3 class="text-success fs-4 mb-4">Continue to fill the form below:</h3>
@@ -29,7 +29,7 @@
 
             <form class="form-group" action="{% url 'registration_two' %}" method="post">
                 {% csrf_token %}
-                {{sessions}}
+                {{sessions_view}}<br>
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
                         <label for="id_title"><span class="input-group-text" id="title-label">Title</span></label>
@@ -56,19 +56,24 @@
                 </div>
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
-                        <label for="id_is_anglican"><span class="input-group-text" id="is_anglican-label">Anglican?</span></label>
+                        <label for="id_anglican"><span class="input-group-text" id="anglican-label">Anglican?</span></label>
                         {{form.anglican}}
                     </div>   
                 </div>
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
-                        <label for="id_location"><span class="input-group-text" id="is_location-label">Location</span></label>
+                        <label for="id_location"><span class="input-group-text" id="location-label">Location</span></label>
                         {{form.location}}
                     </div>   
                 </div>
-                
-                <button type="submit" class="btn btn-success">Continue</button>
-                <a href="{% url 'home' %}" type="submit" class="btn btn-danger">Go Back</a>
+                <div class="row"><p></p><p></p></div>
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-8">
+                        <button type="submit" class="btn btn-success">Continue</button>
+                        <a href="{% url 'home' %}" type="submit" class="btn btn-danger">Go Back</a>
+                    </div>
+                </div>
             </form>
 
 {% endblock container %}
