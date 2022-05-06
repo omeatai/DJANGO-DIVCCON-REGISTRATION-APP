@@ -1,11 +1,15 @@
 from django import forms
 from .models import User
 from .choices import * 
+from django.core.validators import RegexValidator
 
+alphabets = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabet characters are allowed.')
 
+#Home-Form 1
 class HomeForm(forms.ModelForm):
     first_name = forms.CharField(
         label="Your First Name", 
+        validators=[alphabets],
         max_length=50, 
         min_length=2, 
         required=True, 
@@ -21,6 +25,7 @@ class HomeForm(forms.ModelForm):
     
     last_name = forms.CharField(
         label="Your Last Name", 
+        validators=[alphabets],
         max_length=50,
         min_length=2,  
         required=True,
@@ -39,7 +44,7 @@ class HomeForm(forms.ModelForm):
         max_length=6,
         min_length=6, 
         required=True,
-        widget=forms.TextInput(attrs={
+        widget=forms.PasswordInput(attrs={
             'placeholder': 'Enter your PIN',
             'class': 'form-control',
             }), 

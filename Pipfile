@@ -8,6 +8,7 @@ django = "*"
 django-shortcuts = "*"
 python-dotenv = "*"
 pillow = "*"
+python-decouple = "*"
 
 [dev-packages]
 

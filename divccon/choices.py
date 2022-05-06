@@ -35,8 +35,9 @@ PROVINCE_CHOICES = (
     ("ONDO", "ONDO PROVINCE"),
     ("OWERRI", "OWERRI PROVINCE"),
     ("CANA", "CANA PROVINCE"),
-
+    ("NONE", "NOT IN NIGERIA/NON-ANGLICAN")
 )
+
 
 
 INSTITUTION_DIOCESE_CHOICES = (
@@ -290,6 +291,11 @@ OWERRI_DIOCESE_CHOICES = (
 CANA_DIOCESE_CHOICES = (
     ("", "---Select your Diocese---"),
     ("CANA", "CANA"),
+)
+
+NONE_DIOCESE_CHOICES = (
+    ("", "---Select your Diocese---"),
+    ("NONE", "NOT IN NIGERIA/NON-ANGLICAN"),
 )
 
 

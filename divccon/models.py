@@ -4,9 +4,13 @@ from .choices import *
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, unique=False)
-    title = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=50, unique=False)
+    last_name = models.CharField(max_length=50, unique=False)
+    password = models.CharField(max_length=200, unique=True)
+    username = models.CharField(max_length=50, unique=False, default="NONE")
+    email = models.EmailField(max_length=50, unique=False)
+    title = models.CharField(max_length=50, unique=False)
+    phone = models.CharField(max_length=20, unique=False)
     sex = models.CharField(choices=SEX_CHOICES, max_length=6)
     anglican = models.CharField(choices=ANGLICAN_CHOICES, max_length=20)
     location = models.CharField(choices=LOCATION_CHOICES, max_length=20) 

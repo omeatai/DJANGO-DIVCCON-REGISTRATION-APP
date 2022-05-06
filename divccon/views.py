@@ -1,37 +1,52 @@
-# from django.http import HttpResponseRedirect
-from dataclasses import fields
+from re import I
 from django.shortcuts import render,redirect
-from django.http import HttpResponse, response
-from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, FormView
+# from django.http import HttpResponse, HttpResponseRedirect, response
+# from django.urls import reverse, reverse_lazy
+# from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
+from django.views.generic import ListView, DetailView, FormView
 from django.views.generic.edit import CreateView
 from . import forms
 from . import choices
 from .models import User
 
 
-def home(request):
-    if request.method == 'GET':
-        form = forms.HomeForm()
-        return render(request, 'divccon/home.html', {
-            'form': form,
-        })
-    elif request.method == 'POST':
-        form = forms.HomeForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_two')
-        return render(request, 'divccon/home.html', {
-            'form': form,
-        })
+class HomeCreateView(CreateView):
+    model = User
+    form_class = forms.HomeForm
+    template_name = 'divccon/home.html'
+    
+    def post(self, request): 
+        try:
+            # messages.success(request,'Welcome to Divccon!')       
+            form = forms.HomeForm(request.POST)
+            request.session.flush()
+            if form.is_valid():
+                data = form.cleaned_data
+                request.session['first_name'] = data.get('first_name').upper()
+                request.session['last_name'] = data.get('last_name').upper()
+                request.session['password'] = data.get('password')
+                
+                # passw = data.get('password')
+                # for i in User.objects.all():
+                #     print(check_password(passw, i.password))
+                    
+                return redirect('registration_two')
+            return render(request, 'divccon/home.html', {
+                'form': form,
+            })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('home')  
 
-
-def registration_two(request):
-    if request.method == 'GET':
+class RegistrationTwoCreateView(CreateView):
+    model = User
+    form_class = forms.RegistrationTwoForm
+    template_name = 'divccon/form2.html'
+    
+    def get(self, request):
         try:
             if not request.session['first_name'] or not request.session['last_name'] or not request.session['password']:
                 redirect('home')
@@ -41,22 +56,38 @@ def registration_two(request):
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
-            return redirect('home')    
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('home')     
     
-    if request.method == 'POST':
-        form = forms.RegistrationTwoForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_three') 
-        return render(request, 'divccon/form2.html', {
-            'form': form,
-        })
+    def post(self, request): 
+        try:   
+            form = forms.RegistrationTwoForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                for key in data:
+                    request.session[key] = data.get(key).upper()
+                if request.session['anglican'] == 'NON-ANGLICAN' or request.session['location'] == 'ABROAD':
+                    request.session['province'] = "NONE"
+                    request.session['diocese'] = "NONE"
+                    request.session['church'] = "NONE"
+                    return redirect('registration_six')   
+                return redirect('registration_three')     
+                    
+            return render(request, 'divccon/form2.html', {
+                'form': form,
+            })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_two')  
+                
 
-def registration_three(request):
-    if request.method == 'GET':
+class RegistrationThreeCreateView(CreateView):
+    model = User
+    form_class = forms.RegistrationThreeForm
+    template_name = 'divccon/form3.html'
+    
+    def get(self, request):
         try:
             if not request.session['first_name'] or not request.session['last_name'] or not request.session['password'] or not request.session['title'] or not request.session['phone'] or not request.session['email'] or not request.session['sex'] or not request.session['anglican'] or not request.session['location']:
                 redirect('registration_two')
@@ -66,85 +97,94 @@ def registration_three(request):
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
             return redirect('registration_two')    
     
-    if request.method == 'POST':
-        form = forms.RegistrationThreeForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_four') 
-        return render(request, 'divccon/form3.html', {
-            'form': form,
-        })
+    def post(self, request): 
+        try:   
+            form = forms.RegistrationThreeForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                for key in data:
+                    request.session[key] = data.get(key).upper()
+                return redirect('registration_four') 
+            return render(request, 'divccon/form3.html', {
+                'form': form,
+            })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_three')      
 
 
-def registration_four(request):
-    if request.method == 'GET':
+class DioceseFormCreateView(CreateView):
+    PROVINCES = {
+        "INSTITUTION": choices.INSTITUTION_DIOCESE_CHOICES, 
+        "ABA": choices.ABA_DIOCESE_CHOICES,
+        "ABUJA": choices.ABUJA_DIOCESE_CHOICES,
+        "BENDEL": choices.BENDEL_DIOCESE_CHOICES,
+        "ENUGU": choices.ENUGU_DIOCESE_CHOICES,
+        "IBADAN": choices.IBADAN_DIOCESE_CHOICES,
+        "JOS": choices.JOS_DIOCESE_CHOICES,
+        "KADUNA": choices.KADUNA_DIOCESE_CHOICES,
+        "KWARA": choices.KWARA_DIOCESE_CHOICES,
+        "LAGOS": choices.LAGOS_DIOCESE_CHOICES,
+        "LOKOJA": choices.LOKOJA_DIOCESE_CHOICES,
+        "NIGERDELTA": choices.NIGERDELTA_DIOCESE_CHOICES,
+        "OFTHENIGER": choices.OFTHENIGER_DIOCESE_CHOICES,
+        "ONDO": choices.ONDO_DIOCESE_CHOICES,
+        "OWERRI": choices.OWERRI_DIOCESE_CHOICES,
+        "CANA": choices.CANA_DIOCESE_CHOICES,
+        "NONE": choices.NONE_DIOCESE_CHOICES,
+    }
+    
+    model = User
+    form_class = forms.DioceseForm
+    template_name = 'divccon/form4.html'
+    
+    def get(self, request):
         try:
             if not request.session['first_name'] or not request.session['last_name'] or not request.session['password'] or not request.session['title'] or not request.session['phone'] or not request.session['email'] or not request.session['sex'] or not request.session['anglican'] or not request.session['location'] or not request.session['province']:
                 redirect('registration_three')
             form = forms.DioceseForm() 
-            #Logic for Dioceses
-            if request.session['province'] == "INSTITUTION":
-                form.fields['diocese'].choices = choices.INSTITUTION_DIOCESE_CHOICES 
-            elif request.session['province'] == "ABA":
-                form.fields['diocese'].choices = choices.ABA_DIOCESE_CHOICES 
-            elif request.session['province'] == "ABUJA":
-                form.fields['diocese'].choices = choices.ABUJA_DIOCESE_CHOICES 
-            elif request.session['province'] == "BENDEL":
-                form.fields['diocese'].choices = choices.BENDEL_DIOCESE_CHOICES 
-            elif request.session['province'] == "ENUGU":
-                form.fields['diocese'].choices = choices.ENUGU_DIOCESE_CHOICES 
-            elif request.session['province'] == "IBADAN":
-                form.fields['diocese'].choices = choices.IBADAN_DIOCESE_CHOICES 
-            elif request.session['province'] == "JOS":
-                form.fields['diocese'].choices = choices.JOS_DIOCESE_CHOICES 
-            elif request.session['province'] == "KADUNA":
-                form.fields['diocese'].choices = choices.KADUNA_DIOCESE_CHOICES     
-            elif request.session['province'] == "KWARA":
-                form.fields['diocese'].choices = choices.KWARA_DIOCESE_CHOICES     
-            elif request.session['province'] == "LAGOS":
-                form.fields['diocese'].choices = choices.LAGOS_DIOCESE_CHOICES     
-            elif request.session['province'] == "LOKOJA":
-                form.fields['diocese'].choices = choices.LOKOJA_DIOCESE_CHOICES     
-            elif request.session['province'] == "NIGERDELTA":
-                form.fields['diocese'].choices = choices.NIGERDELTA_DIOCESE_CHOICES     
-            elif request.session['province'] == "OFTHENIGER":
-                form.fields['diocese'].choices = choices.OFTHENIGER_DIOCESE_CHOICES 
-            elif request.session['province'] == "ONDO":
-                form.fields['diocese'].choices = choices.ONDO_DIOCESE_CHOICES  
-            elif request.session['province'] == "OWERRI":
-                form.fields['diocese'].choices = choices.OWERRI_DIOCESE_CHOICES  
-            elif request.session['province'] == "CANA":
-                form.fields['diocese'].choices = choices.CANA_DIOCESE_CHOICES                      
-            
+            form.fields['diocese'].choices = self.PROVINCES[request.session['province']]                 
             request.session['choice'] = form.fields['diocese'].choices         
             return render(request, 'divccon/form4.html', {
                 'sessions': request.session,
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
-            return redirect('registration_three')    
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_three')   
     
-    if request.method == 'POST':
-        form = forms.DioceseForm(request.POST)
-        form.fields['diocese'].choices = request.session['choice']
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_five') 
-        return render(request, 'divccon/form4.html', {
-            'form': form,
-        })
+    def post(self, request): 
+        try:   
+            form = forms.DioceseForm(request.POST)
+            form.fields['diocese'].choices = request.session['choice']
+            if form.is_valid():
+                data = form.cleaned_data
+                for key in data:
+                    request.session[key] = data.get(key).upper()
+                if request.session['diocese'] != 'ABUJA':
+                    request.session['church'] = "NONE"
+                    return redirect('registration_six') 
+                return redirect('registration_five') 
+            return render(request, 'divccon/form4.html', {
+                'form': form,
+            })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_four')     
+            
 
 
-def registration_five(request):
-    if request.method == 'GET':
+class ChurchCreateView(CreateView):
+    model = User
+    form_class = forms.ChurchForm
+    template_name = 'divccon/form5.html'
+    
+    def get(self, request):
         try:
             if not request.session['first_name'] or not request.session['last_name'] or not request.session['password'] or not request.session['title'] or not request.session['phone'] or not request.session['email'] or not request.session['sex'] or not request.session['anglican'] or not request.session['location'] or not request.session['province'] or not request.session['diocese']:
                 redirect('registration_four')
@@ -154,54 +194,70 @@ def registration_five(request):
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
-            return redirect('registration_four')    
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_four') 
     
-    if request.method == 'POST':
-        form = forms.ChurchForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_six') 
-        return render(request, 'divccon/form5.html', {
-            'form': form,
-        })
+    def post(self, request):
+        try:    
+            if request.method == 'POST':
+                form = forms.ChurchForm(request.POST)
+                if form.is_valid():
+                    data = form.cleaned_data
+                    for key in data:
+                        request.session[key] = data.get(key).upper()
+                    return redirect('registration_six') 
+                return render(request, 'divccon/form5.html', {
+                    'form': form,
+                })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_five')          
 
 
-def registration_six(request):
-    if request.method == 'GET':
+class DesignationCreateView(CreateView):
+    model = User
+    form_class = forms.DesignationForm
+    template_name = 'divccon/form6.html'
+    
+    def get(self, request):
         try:
             if not request.session['first_name'] or not request.session['last_name'] or not request.session['password'] or not request.session['title'] or not request.session['phone'] or not request.session['email'] or not request.session['sex'] or not request.session['anglican'] or not request.session['location'] or not request.session['province'] or not request.session['diocese'] or not request.session['church']:
-                redirect('registration_six')
+                redirect('registration_five')
             form = forms.DesignationForm()    
             return render(request, 'divccon/form6.html', {
                 'sessions': request.session,
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
-            return redirect('registration_five')    
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_five')     
     
-    if request.method == 'POST':
-        form = forms.DesignationForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            for key in data:
-                request.session[key] = data.get(key).upper()
-            return redirect('registration_seven') 
-        return render(request, 'divccon/form6.html', {
-            'form': form,
-        })
+    def post(self, request): 
+        try:   
+            form = forms.DesignationForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                for key in data:
+                    request.session[key] = data.get(key).upper()
+                return redirect('registration_seven') 
+            return render(request, 'divccon/form6.html', {
+                'form': form,
+            })
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_six')     
 
 
 
 class PhotoCreateView(CreateView):
     model = User
     form_class = forms.PhotoForm
-    # fields = ["photo"]
     template_name = "divccon/form7.html"
-    success_url = reverse_lazy('registration_seven')
+    # fields = ["photo"]
+    # context_object_name = "photos"
+    # success_url = reverse_lazy('registration_seven')
 
     def get(self, request):
         try:
@@ -213,8 +269,9 @@ class PhotoCreateView(CreateView):
                 'sessions_view': dict(request.session.items()),
                 'form': form,   
             })
-        except Exception:
-            return redirect('registration_six') 
+        except Exception as err:
+            messages.error(request,f'There was an Error - {err}') 
+            return redirect('registration_six')     
     
     def post(self, request):
         photo_image = request.FILES["photo"]
@@ -225,16 +282,39 @@ class PhotoCreateView(CreateView):
         last_name = request.session['last_name']
         name = f"{first_name}_{last_name}_{photo_name}"
         
-        form = forms.PhotoForm(request.POST, request.FILES) 
+        form = forms.PhotoForm(request.POST, request.FILES)
+        
+        if  photo_size > 5000000:
+            messages.error(request,'Your Image is too large. Must be less than 5MB. Try Again!') 
+            return redirect('registration_seven')
+        
+        if  not photo_type in {'image/jpeg','image/jpg','image/png'}:
+            messages.error(request,'Image Type is not among these: PNG, JPG or JPEG. Try Again!') 
+            return redirect('registration_seven')
         
         if form.is_valid():
             photo_image.name = name
             instance = User()
-            instance.photo=photo_image
             instance.username = name
+            instance.first_name = request.session['first_name']
+            instance.last_name = request.session['last_name']
+            instance.set_password(request.session['password'])
+            instance.title = request.session['title']
+            instance.phone = request.session['phone']
+            instance.email = request.session['email']
+            instance.sex = request.session['sex']
+            instance.anglican = request.session['anglican']
+            instance.location = request.session['location']
+            instance.province = request.session['province']
+            instance.diocese = request.session['diocese']
+            instance.church = request.session['church']
+            instance.designation = request.session['designation']
+            instance.committee = "NONE"
+            instance.photo=photo_image
             instance.save()
-
+            
             request.session['photo'] = name  
+            messages.success(request,f'Congratulations! You are registered.') 
             return redirect('registration_seven')
         return render(request, 'divccon/form7.html', {
             'form': form,
@@ -292,23 +372,6 @@ class PhotoCreateView(CreateView):
         #     raise Exception("Image size is too large: more than 5MB. Try Again!") 
         # if not photo_type in ('image/jpeg','image/jpg','image/png'):
         #     raise Exception("Image Type is not among these: PNG, JPG or JPEG. Try Again!") 
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

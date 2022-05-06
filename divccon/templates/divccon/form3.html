@@ -16,6 +16,23 @@
 {% endblock header %}
 
 {% block container %}
+            <!-- messgae Alert -->
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% else %}   
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
             <!-- Error Alert -->
             {% if form.errors %}
                 {% for field in form %}
@@ -35,7 +52,7 @@
 
             <form class="form-group" action="{% url 'registration_three' %}" method="post">
                 {% csrf_token %}
-                {{sessions}}
+                {{sessions_view}}
                 <div class="row d-flex align-items-center">
                     <div class="col-12 input-group mb-3">
                         <label for="id_province"><span class="input-group-text" id="is_province-lable">Province</span></label>

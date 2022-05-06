@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+# from decouple import config
 
 from pathlib import Path
 import os
@@ -23,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@r24yy587h!ffqj8e+c3k0g^40cb-c6)1h3c=w^llj@y)ua1o6'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -144,3 +146,10 @@ AUTH_USER_MODEL = 'divccon.User'
 SILENCED_SYSTEM_CHECKS = ["auth.E003"]
 
 
+# PASSWORD_HASHERS = [
+#     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+#     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+#     'django.contrib.auth.hashers.Argon2PasswordHasher',
+#     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+#     'django.contrib.auth.hashers.ScryptPasswordHasher',
+# ]
