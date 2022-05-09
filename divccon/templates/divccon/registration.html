@@ -1,0 +1,15 @@
+{% extends 'divccon/bbase.html'%}
+
+{% block title %}
+<title>DIVCCON - HOME</title>
+{% endblock %}
+
+
+{% block container %}
+<div class="bg-light p-5 rounded">
+    <h1>Welcome to Divccon</h1>
+    <p class="lead">Click the button below to begin your Registration.</p>
+    <a class="btn btn-lg btn-danger" href="{% url 'divccon' %}" role="button">BACK TO DIVCCON WEBSITE &raquo;</a>
+    <a class="btn btn-lg btn-primary" href="{% url 'registration_one' %}" role="button">START &raquo;</a>
+</div>
+{% endblock %}

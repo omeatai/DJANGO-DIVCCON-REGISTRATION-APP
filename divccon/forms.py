@@ -5,8 +5,8 @@ from django.core.validators import RegexValidator
 
 alphabets = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabet characters are allowed.')
 
-#Home-Form 1
-class HomeForm(forms.ModelForm):
+#Form 1
+class RegistrationOneForm(forms.ModelForm):
     first_name = forms.CharField(
         label="Your First Name", 
         validators=[alphabets],
@@ -52,6 +52,7 @@ class HomeForm(forms.ModelForm):
             "required": "Your PIN must not be empty",
             "max_length": "Please enter a 6-digits PIN",
             "min_length": "Please enter a 6-digits PIN",
+            "unique": "This PIN has already been used."
             })
     
     class Meta:
@@ -59,7 +60,7 @@ class HomeForm(forms.ModelForm):
         fields = ['first_name','last_name', 'password']
 
 
-
+#Form 2
 class RegistrationTwoForm(forms.ModelForm):
     title = forms.CharField(
             label="Your Title", 
@@ -241,4 +242,13 @@ class PhotoForm(forms.ModelForm):
         fields = ['photo']      
         
         
-        
+class SuccessForm(forms.ModelForm):
+    last_login = forms.DateField(
+        label="Your Last Login", 
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            }))
+
+    class Meta:
+        model = User
+        fields = ['last_login']        

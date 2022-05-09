@@ -1,0 +1,95 @@
+{% extends 'divccon/bbase.html'%}
+
+{% block title %}
+<title>DIVCCON - FORM-2</title>
+{% endblock %}
+
+
+{% block container %}
+<div class="bg-light p-5 rounded">
+    <h1>Registration Form-2</h1>
+    <hr>
+    <h3>Weldone, {{sessions.first_name}} {{sessions.last_name}}</h3>
+    <p class="lead text-success">Continue to fill the form below:</p>
+
+    <!-- messgae Alert -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% else %}   
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Error Alert -->
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <strong>Error!</strong> {{ error|escape }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form class="form-group" action="{% url 'registration_two' %}" method="post">
+        {% csrf_token %}
+        {{sessions_view}}<br>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_title"><span class="input-group-text" id="title-label">Title</span></label>
+                {{form.title}}
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_phone"><span class="input-group-text" id="phone-label">Phone no.</span></label>
+                {{form.phone}}
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_email"><span class="input-group-text" id="email-label">Email</span></label>
+                {{form.email}}
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_sex"><span class="input-group-text" id="sex-label">Sex</span></label>
+                {{form.sex}}
+            </div>
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_anglican"><span class="input-group-text" id="anglican-label">Anglican?</span></label>
+                {{form.anglican}}
+            </div>   
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_location"><span class="input-group-text" id="location-label">Location</span></label>
+                {{form.location}}
+            </div>   
+        </div>
+        <div class="row"><p></p><p></p></div>
+        <button type="submit" class="btn btn-success btn-lg btn-block">Continue &raquo;</button>
+        <a href="{% url 'registration_one' %}" type="submit" class="btn btn-danger btn-lg btn-block">Go Back</a>
+
+    </form>
+
+</div>
+{% endblock %}

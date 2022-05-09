@@ -1,0 +1,67 @@
+{% extends 'divccon/bbase.html'%}
+
+{% block title %}
+<title>DIVCCON - FORM-4</title>
+{% endblock %}
+
+
+{% block container %}
+<div class="bg-light p-5 rounded">
+    <h1>Registration Form-4</h1>
+    <hr>
+    <h3>Awesome, {{sessions.first_name}} {{sessions.last_name}}</h3>
+    <p class="lead text-success">Next, Choose your Diocese:</p>
+
+    <!-- messgae Alert -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% else %}   
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Error Alert -->
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <strong>Error!</strong> {{ error|escape }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form class="form-group" action="{% url 'registration_four' %}" method="post">
+        {% csrf_token %}
+        {{sessions}}
+        {{sessions_view}}
+        <div class="row d-flex align-items-center">
+            <div class="col-12 input-group mb-3">
+                <label for="id_diocese"><span class="input-group-text" id="diocese-label">Diocese</span></label>
+                {{form.diocese}}
+            </div>   
+        </div>
+        <div class="row"><p></p><p></p></div>
+        <button type="submit" class="btn btn-success btn-lg btn-block">Continue &raquo;</button>
+        <a href="{% url 'registration_three' %}" type="submit" class="btn btn-danger btn-lg btn-block">Go Back</a>
+    </form>
+
+    
+
+</div>
+{% endblock %}

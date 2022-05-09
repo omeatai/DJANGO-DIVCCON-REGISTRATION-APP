@@ -9,6 +9,7 @@ django-shortcuts = "*"
 python-dotenv = "*"
 pillow = "*"
 python-decouple = "*"
+pymysql = "*"
 
 [dev-packages]
 

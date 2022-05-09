@@ -3,3 +3,16 @@
     box-sizing: border-box;
 }
 
+/* Show it is fixed to the top */
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+    background-color: #401745;
+}
+
+.photo img {
+    width: 200px;
+    height:200px;
+    border: 5px solid #000;
+    border-radius: 20px;
+}
