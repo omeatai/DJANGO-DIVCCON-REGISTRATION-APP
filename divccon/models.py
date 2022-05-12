@@ -22,6 +22,7 @@ class User(AbstractUser):
     committee = models.CharField(max_length=50, default="NONE")
     # photo = models.ImageField(upload_to='images/', default="NONE", null=True, blank=True)
     photo = models.ImageField(upload_to='images/')
+    completed = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

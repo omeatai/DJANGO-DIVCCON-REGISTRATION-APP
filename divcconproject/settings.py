@@ -10,11 +10,24 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 # from decouple import config
+
+#// pip install django-environ
+#import environ
+#env = environ.Env()
+#environ.Env.read_env()
+#----------------------------------------------------------------
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = '587'
+#EMAIL_HOST_USER = env(email_user)
+#EMAIL_HOST_PASSWORD = env(email_password)
+#EMAIL_USE_TLS = True
+
 import pymysql
 pymysql.install_as_MySQLdb()
 
 from pathlib import Path
 import os
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -38,6 +51,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'clearcache',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

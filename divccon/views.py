@@ -11,6 +11,7 @@ from django.views import View
 from . import forms
 from . import choices
 from .models import User, Pin
+import contextlib
 
 
 def divccon(request):
@@ -308,6 +309,7 @@ class PhotoCreateView(CreateView):
             photo_type = photo_image.content_type
             first_name = request.session['first_name']
             last_name = request.session['last_name']
+            password = request.session['password']
             filename = f"{first_name}_{last_name}_{photo_name}"
             
             if  photo_size > 5000000:
@@ -317,6 +319,11 @@ class PhotoCreateView(CreateView):
             if  photo_type not in {'image/jpeg','image/jpg','image/png'}:
                 messages.error(request,'Image Type is not among these: PNG, JPG or JPEG. Try Again!') 
                 return redirect('registration_seven')
+            with contextlib.suppress(Exception):
+                member = User.objects.get(last_name=last_name,password=password,completed=1)   
+                if  member:
+                    messages.success(request,'You have already been registered!') 
+                    return redirect('registration_one')
             
             form = forms.PhotoForm(request.POST, request.FILES)
             
@@ -339,9 +346,22 @@ class PhotoCreateView(CreateView):
                 instance.designation = request.session['designation']
                 instance.committee = "NONE"
                 instance.photo = photo_image
+                instance.completed = 1
                 instance.save()
                 request.session['photo'] = filename
-                messages.success(request, 'Congratulations! You are registered.') 
+                #send Email
+                sender = "admin@divccon.com"
+                subject = f"DIVCCON Registration for {first_name} {last_name}"
+                message = f"""From: {sender},
+                
+                Congratulations {first_name} {last_name} on your Registration for DIVCCON 2022!
+                Your PIN is {request.session['password']}. 
+                
+                Signed,
+                Divccon Registration Team"""
+                recipients = [request.session['email'].lower()]
+                send_mail(subject, message, sender, recipients,fail_silently=False)
+                
                 return redirect('success')
             return render(request, 'divccon/bform7.html', {
                 'form': form,
